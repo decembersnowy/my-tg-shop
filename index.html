@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KELME Official Telegram Shop</title>
-    <script src="https://telegram.org"></script>
+    <!-- ПОЛНЫЙ АДРЕС БИБЛИОТЕКИ БЕЗ ОБРЕЗАНИЙ СИСТЕМЫ -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -12,15 +13,12 @@
             color: #000000;
             margin: 0; padding: 0; box-sizing: border-box;
         }
-        /* Брендовая шапка KELME */
         .brand-header {
             display: flex; justify-content: center; align-items: center;
             padding: 15px 20px; border-bottom: 1px solid #e5e5e5; background: #fff;
             position: sticky; top: 0; z-index: 100;
         }
         .brand-logo { font-size: 18px; font-weight: 900; letter-spacing: 2px; display: flex; align-items: center; gap: 5px; }
-        
-        /* Промо-баннер */
         .hero-banner {
             width: 100%; height: 160px;
             background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.4)), url('https://ibb.co') center/cover no-repeat;
@@ -28,8 +26,6 @@
         }
         .hero-banner h1 { font-size: 20px; margin: 0 0 5px 0; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
         .hero-banner p { font-size: 12px; margin: 0; opacity: 0.9; }
-        
-        /* Категории товаров (Табы) */
         .categories-container {
             display: flex; gap: 8px; padding: 15px; overflow-x: auto; background: #fff;
         }
@@ -38,8 +34,6 @@
             font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: 0.2s;
         }
         .category-tab.active { background: #000; color: #fff; }
-        
-        /* Сетка товаров */
         .products-grid {
             display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 0 15px 80px 15px; background: #fff;
         }
@@ -52,8 +46,6 @@
         }
         .product-title { font-size: 12px; font-weight: 700; margin: 0 0 4px 0; text-transform: uppercase; color: #000; height: 32px; overflow: hidden; }
         .product-price { font-size: 13px; font-weight: 800; color: #000; margin-bottom: 8px; }
-        
-        /* Кнопки */
         .btn-add {
             background: #000000; color: #ffffff; border: none; padding: 10px; font-size: 12px; font-weight: 700; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px;
         }
@@ -64,18 +56,15 @@
 </head>
 <body>
 
-    <!-- Чистая Шапка KELME -->
     <div class="brand-header">
         <div class="brand-logo">KELME <span>🐾</span></div>
     </div>
 
-    <!-- Промо-баннер -->
     <div class="hero-banner">
         <h1>NEW COLLECTION</h1>
         <p>LEAVE YOUR MARK</p>
     </div>
 
-    <!-- Категории товаров -->
     <div class="categories-container">
         <button class="category-tab active" id="tab-all" onclick="filterCategory('all')">Все товары</button>
         <button class="category-tab" id="tab-clothing" onclick="filterCategory('clothing')">Одежда</button>
@@ -83,7 +72,6 @@
         <button class="category-tab" id="tab-bags" onclick="filterCategory('bags')">Аксессуары</button>
     </div>
 
-    <!-- Сетка каталога -->
     <div class="products-grid" id="products"></div>
 
     <script>
@@ -173,16 +161,12 @@
             }
         }
 
-        // ИСПРАВЛЕНО НАДЕЖНО: Так как sendData заблокирован в Inline-режиме, мы отправляем инвойс обратно боту через безопасное текстовое сообщение!
         tg.onEvent('mainButtonClicked', function() {
-            // Превращаем корзину в понятную текстовую команду для бота
             let orderText = "/order_data " + JSON.stringify(cart);
             tg.sendData(orderText);
-            
-            // Запасной вариант для новых версий Telegram, если sendData все равно зажат политиками мессенджера
             setTimeout(() => {
                 tg.close();
-            }, 100);
+            }, 150);
         });
 
         renderProducts();
