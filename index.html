@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KELME Official Telegram Shop</title>
-    <!-- ИСПРАВЛЕНО: Полный рабочий адрес библиотеки Telegram -->
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://telegram.org"></script>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -21,7 +20,6 @@
         .brand-logo { font-size: 18px; font-weight: 900; letter-spacing: 2px; display: flex; align-items: center; gap: 5px; }
         .hero-banner {
             width: 100%; height: 160px;
-            /* ИСПРАВЛЕНО: Прямая рабочая ссылка на брендовый баннер Kelme */
             background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.4)), url('https://ibb.co') center/cover no-repeat;
             display: flex; flex-direction: column; justify-content: center; align-items: center; color: #fff; text-align: center;
         }
@@ -75,12 +73,19 @@
 
     <div class="products-grid" id="products"></div>
 
-        <script>
+    <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
 
         let currentCategory = 'all';
         let cart = {};
+
+        const products = [
+            { id: 1, name: "RED STREET SWEATSHIRT", price_uzs: 650000, category: "clothing", img: "https://i.ibb.co/Ld6475vq/11425.webp" },
+            { id: 2, name: "MONTES YELLOW SWEATSHIRT", price_uzs: 180000, category: "clothing", img: "https://i.ibb.co/wZqgKfCz/9569.webp" },
+            { id: 3, name: "NAVY LYNX LONG PANTS", price_uzs: 290000, category: "clothing", img: "https://i.ibb.co/mC6FLFMw/3085.webp" },
+            { id: 4, name: "BACKPACK PREMIUM", price_uzs: 350000, category: "bags", img: "https://i.ibb.co/HTHZmCPQ/4603.webp" }
+        ];
 
         function renderProducts() {
             const container = document.getElementById('products');
@@ -155,12 +160,37 @@
             }
         }
 
-        // ИСПРАВЛЕНО: Вместо скрытого sendData вызываем полноценное нативное окно инвойса Telegram
+        // НАДЕЖНЫЙ ОБРАБОТЧИК ОПЛАТЫ ЧЕРЕЗ API БОТА И OPENINVOICE()
         tg.onEvent('mainButtonClicked', function() {
-            // Формируем прямую тестовую ссылку на инвойс (работает через стандартный механизм Invoice)
-            // В реальном продакшене эта ссылка берется из bot.create_invoice_link, но для теста Mini App вызываем нативный обработчик
-            alert("Заказ оформлен! Переходим к оплате.");
-            tg.close();
+            tg.MainButton.showProgress(false); // Показываем индикатор загрузки на кнопке
+            
+            // Динамически получаем адрес твоего сервера Render
+            const backendUrl = "https://onrender.com";
+            const chatId = tg.initDataUnsafe?.user?.id;
+
+            fetch(backendUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ cart: cart, chat_id: chatId })
+            })
+            .then(response => response.json())
+            .then(result => {
+                tg.MainButton.hideProgress();
+                if (result.ok && result.invoice_link) {
+                    // Открываем нативное окно оплаты внутри Mini App витрины
+                    tg.openInvoice(result.invoice_link, function(status) {
+                        if (status === 'paid') {
+                            tg.close(); // Закрываем магазин только после успешной оплаты
+                        }
+                    });
+                } else {
+                    alert("Ошибка сервера при создании счета: " + (result.error || "Неизвестная ошибка"));
+                }
+            })
+            .catch(error => {
+                tg.MainButton.hideProgress();
+                alert("Не удалось связаться с сервером оплаты: " + error.message);
+            });
         });
 
         renderProducts();
