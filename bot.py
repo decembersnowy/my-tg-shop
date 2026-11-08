@@ -15,9 +15,10 @@ PROVIDER_TOKEN_USD = "1877036958:TEST:5700904b8d9cc34596d3d724baa380cc33d3d18d"
 
 # База данных цен (ID товаров должны строго совпадать с index.html)
 PRODUCTS = {
-    1: {"name": "Худи Базовое", "uzs": 250000, "usd": 20},
-    2: {"name": "Кроссовки Street", "uzs": 750000, "usd": 60},
-    3: {"name": "Кепка Черная", "uzs": 90000, "usd": 7}
+    { id: 1, name: "RED STREET SWEATSHIRT", price_uzs: 650000, price_usd: 50, img: "https://kelme.com/cdn/shop/files/11425.jpg?v=1748001678&width=1000" },
+    { id: 2, name: "MONTES YELLOW SWEATSHIRT", price_uzs: 180000, price_usd: 15, img: "https://kelme.com/cdn/shop/files/9569.jpg?v=1748005352&width=1000" },
+    { id: 3, name: "NAVY LYNX LONG PANTS", price_uzs: 290000, price_usd: 22, img: "https://kelme.com/cdn/shop/files/3085.jpg?v=1748001775&width=600" },
+    { id: 4, name: "BACKPACK", price_uzs: 350000, price_usd: 28, img: "https://kelme.com/cdn/shop/files/4603.jpg?v=1748003643&width=700" }
 }
 
 bot = Bot(token=BOT_TOKEN)
