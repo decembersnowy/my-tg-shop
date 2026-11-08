@@ -10,7 +10,7 @@ from aiogram.types import Message, LabeledPrice, PreCheckoutQuery, ContentType
 # Сначала пробуем взять из настроек Render, а если там пусто — подставляем напрямую ваш токен
 BOT_TOKEN = os.environ.get("BOT_TOKEN") or "9111379013:AAGIale1XfxLH-zi14CKI-fvNKHnkeA-HlI"
 
-WEBAPP_URL = "https://decembersnowy.github.io/my-tg-shop" 
+WEBAPP_URL = "https://decembersnowy.github.io/my-tg-shop/" 
 
 # То же самое делаем для платежных токенов (если на Render не заданы, берутся строки)
 PROVIDER_TOKEN_UZS = os.environ.get("PROVIDER_TOKEN_UZS") or "398062629:TEST:999999999_F91D8F69C042267444B74CC0B3C747757EB0E065"
