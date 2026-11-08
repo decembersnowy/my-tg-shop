@@ -7,7 +7,7 @@ from aiogram import Bot, Dispatcher, F
 from aiogram.types import Message, LabeledPrice, PreCheckoutQuery, ContentType
 
 # === НАСТРОЙКИ ===
-BOT_TOKEN = os.environ.get("BOT_TOKEN") or "9111379013:AAGIale1XfxLH-zi14CKI-fvNKHnkeA-HlI"
+BOT_TOKEN = os.environ.get("BOT_TOKEN") or "9111379013:AAHUgMUW3Iccs33cOG7OWX4BKb2usfYAxaA"
 
 # ИСПРАВЛЕНО: Поставили v=101 для полного сброса старого кэша Telegram
 WEBAPP_URL = "https://decembersnowy.github.io/my-tg-shop/?v=101" 
