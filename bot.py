@@ -41,14 +41,22 @@ def run_port_listener():
     server.serve_forever()
 
 # --- Логика Telegram-бота ---
+# --- Логика Telegram-бота ---
 @dp.message(F.text == "/start")
 async def start_cmd(message: Message):
-    from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, WebAppInfo
-    kb = ReplyKeyboardMarkup(
-        keyboard=[[KeyboardButton(text="Открыть магазин", web_app=WebAppInfo(url=WEBAPP_URL))]],
-        resize_keyboard=True
+    from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
+    
+    inline_kb = InlineKeyboardMarkup(
+        inline_keyboard=[
+            [InlineKeyboardButton(text="🛍️ Открыть магазин", web_app=WebAppInfo(url=WEBAPP_URL))]
+        ]
     )
-    await message.answer("Добро пожаловать в наш магазин! Нажмите кнопку ниже, чтобы открыть каталог:", reply_markup=kb)
+    
+    await message.answer(
+        "Добро пожаловать в официальный магазин KELME Uzbekistan! 🐾\n\n"
+        "Нажмите на кнопку ниже, чтобы открыть наш каталог одежды, обуви и аксессуаров.",
+        reply_markup=inline_kb
+    )
 
 @dp.message(F.content_type == ContentType.WEB_APP_DATA)
 async def process_order(message: Message):
