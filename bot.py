@@ -1,17 +1,20 @@
 import asyncio
 import json
-import os
+import os  # Проверьте, чтобы эта строчка была!
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import threading
 from aiogram import Bot, Dispatcher, F
 from aiogram.types import Message, LabeledPrice, PreCheckoutQuery, ContentType
 
-# === НАСТРОЙКИ (Вставьте свои данные) ===
-BOT_TOKEN = os.environ.get("9111379013:AAGIale1XfxLH-zi14CKI-fvNKHnkeA-HlI")
-WEBAPP_URL = "https://decembersnowy.github.io/my-tg-shop/" 
+# === НАСТРОЙКИ ===
+# Сначала пробуем взять из настроек Render, а если там пусто — подставляем напрямую ваш токен
+BOT_TOKEN = os.environ.get("BOT_TOKEN") or "9111379013:AAGIale1XfxLH-zi14CKI-fvNKHnkeA-HlI"
 
-PROVIDER_TOKEN_UZS = "398062629:TEST:999999999_F91D8F69C042267444B74CC0B3C747757EB0E065"
-PROVIDER_TOKEN_USD = "1877036958:TEST:5700904b8d9cc34596d3d724baa380cc33d3d18d"
+WEBAPP_URL = "https://decembersnowy.github.io/my-tg-shop" 
+
+# То же самое делаем для платежных токенов (если на Render не заданы, берутся строки)
+PROVIDER_TOKEN_UZS = os.environ.get("PROVIDER_TOKEN_UZS") or "398062629:TEST:999999999_F91D8F69C042267444B74CC0B3C747757EB0E065"
+PROVIDER_TOKEN_USD = os.environ.get("PROVIDER_TOKEN_USD") or "1877036958:TEST:5700904b8d9cc34596d3d724baa380cc33d3d18d"
 
 # База данных цен (ID товаров должны строго совпадать с index.html)
 PRODUCTS = {
