@@ -10,7 +10,7 @@ from aiogram.types import Message, LabeledPrice, PreCheckoutQuery, ContentType
 BOT_TOKEN = os.environ.get("BOT_TOKEN") or "9111379013:AAGIale1XfxLH-zi14CKI-fvNKHnkeA-HlI"
 
 # ИСПРАВЛЕНО: Обновили версию до v=4 для полного сброса кэша Telegram
-WEBAPP_URL = "https://github.io" 
+WEBAPP_URL = "https://decembersnowy.github.io/my-tg-shop/?v=4" 
 
 PROVIDER_TOKEN_UZS = os.environ.get("PROVIDER_TOKEN_UZS") or "398062629:TEST:999999999_F91D8F69C042267444B74CC0B3C747757EB0E065"
 
