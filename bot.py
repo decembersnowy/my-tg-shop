@@ -7,7 +7,7 @@ from aiogram import Bot, Dispatcher, F
 from aiogram.types import Message, LabeledPrice, PreCheckoutQuery, ContentType
 
 # === НАСТРОЙКИ (Вставьте свои данные) ===
-BOT_TOKEN = "9111379013:AAGIale1XfxLH-zi14CKI-fvNKHnkeA-HlI"
+BOT_TOKEN = os.environ.get("9111379013:AAGIale1XfxLH-zi14CKI-fvNKHnkeA-HlI")
 WEBAPP_URL = "https://decembersnowy.github.io/my-tg-shop/" 
 
 PROVIDER_TOKEN_UZS = "398062629:TEST:999999999_F91D8F69C042267444B74CC0B3C747757EB0E065"
