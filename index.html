@@ -3,62 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Telegram Mini App Shop</title>
-    <!-- ИСПРАВЛЕНО: Рабочее подключение библиотеки Telegram -->
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <title>KELME Official Telegram Shop</title>
+    <script src="https://telegram.org"></script>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background-color: var(--tg-theme-bg-color, #ffffff);
-            color: var(--tg-theme-text-color, #000000);
-            margin: 0; padding: 10px; box-sizing: border-box;
+            background-color: #ffffff;
+            color: #000000;
+            margin: 0; padding: 0; box-sizing: border-box;
         }
-        .currency-switcher {
-            display: flex; justify-content: center; gap: 10px; margin-bottom: 15px;
+        /* Брендовая шапка KELME */
+        .brand-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px 20px; border-bottom: 1px solid #e5e5e5; background: #fff;
+            position: sticky; top: 0; z-index: 100;
         }
-        .btn-currency {
-            background: var(--tg-theme-secondary-bg-color, #f0f0f0);
-            color: var(--tg-theme-button-text-color, #000);
-            border: 1px solid #ccc; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: bold;
+        .brand-logo { font-size: 18px; font-weight: 900; letter-spacing: 2px; display: flex; align-items: center; gap: 5px; }
+        .currency-toggle {
+            background: #000; color: #fff; border: none; padding: 5px 10px; font-size: 11px; font-weight: bold; border-radius: 4px; cursor: pointer;
         }
-        .btn-currency.active {
-            background: var(--tg-theme-button-color, #2481cc);
-            color: #fff; border-color: transparent;
+        /* Промо-баннер как на сайте */
+        .hero-banner {
+            width: 100%; height: 160px;
+            background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.4)), url('https://ibb.co') center/cover no-repeat;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; color: #fff; text-align: center;
         }
+        .hero-banner h1 { font-size: 20px; margin: 0 0 5px 0; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
+        .hero-banner p { font-size: 12px; margin: 0; opacity: 0.9; }
+        /* Категории товаров (Табы) */
+        .categories-container {
+            display: flex; gap: 8px; padding: 15px; overflow-x: auto; background: #fff;
+        }
+        .category-tab {
+            background: #f5f5f5; color: #000; border: none; padding: 8px 16px; border-radius: 20px;
+            font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: 0.2s;
+        }
+        .category-tab.active { background: #000; color: #fff; }
+        /* Сетка товаров */
         .products-grid {
-            display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 70px;
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 0 15px 80px 15px; background: #fff;
         }
         .product-card {
-            background: var(--tg-theme-secondary-bg-color, #f5f5f5);
-            border-radius: 12px; padding: 10px; display: flex; flex-direction: column; justify-content: space-between;
+            background: #ffffff; border: 1px solid #f0f0f0; border-radius: 0px; padding: 8px;
+            display: flex; flex-direction: column; justify-content: space-between;
         }
         .product-img {
-        width: 100%;
-        height: 180px; /* Увеличили высоту, чтобы вещь помещалась */
-        object-fit: contain; /* ИСПРАВЛЕНО: теперь картинка не обрезается, а сжимается целиком внутрь */
-        background: #ffffff; /* Белый фон под картинку, если она узкая */
-        border-radius: 8px;
+            width: 100%; height: 150px; object-fit: contain; background: #fff; margin-bottom: 8px;
         }
-        .product-title { font-size: 14px; margin: 8px 0 4px 0; font-weight: 600; }
-        .product-price { font-size: 13px; color: var(--tg-theme-hint-color, #aaa); margin-bottom: 10px; }
+        .product-title { font-size: 12px; font-weight: 700; margin: 0 0 4px 0; text-transform: uppercase; color: #000; height: 32px; overflow: hidden; }
+        .product-price { font-size: 13px; font-weight: 800; color: #000; margin-bottom: 8px; }
+        /* Брендовые кнопки */
         .btn-add {
-            background: var(--tg-theme-button-color, #2481cc);
-            color: var(--tg-theme-button-text-color, #ffffff);
-            border: none; padding: 8px; border-radius: 8px; width: 100%; font-weight: bold; cursor: pointer;
+            background: #000000; color: #ffffff; border: none; padding: 10px; font-size: 12px; font-weight: 700; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px;
         }
-        .counter { display: flex; justify-content: space-between; align-items: center; }
-        .btn-count {
-            background: #ccc; border: none; padding: 5px 12px; border-radius: 6px; font-weight: bold; cursor: pointer;
-        }
+        .counter { display: flex; justify-content: space-between; align-items: center; border: 1px solid #000; }
+        .btn-count { background: none; border: none; padding: 8px 14px; font-weight: bold; cursor: pointer; font-size: 14px; }
+        .counter span { font-weight: 700; font-size: 13px; }
     </style>
 </head>
 <body>
 
-    <div class="currency-switcher">
-        <button class="btn-currency active" id="btn-uzs" onclick="setCurrency('UZS')">UZS (сум)</button>
-        <button class="btn-currency" id="btn-usd" onclick="setCurrency('USD')">USD ($)</button>
+    <!-- Шапка KELME -->
+    <div class="brand-header">
+        <div class="brand-logo">KELME <span>🐾</span></div>
+        <button class="currency-toggle" id="currency-btn" onclick="toggleCurrency()">Валюта: UZS</button>
     </div>
 
+    <!-- Промо-баннер -->
+    <div class="hero-banner">
+        <h1>NEW COLLECTION</h1>
+        <p>LEAVE YOUR MARK</p>
+    </div>
+
+    <!-- Категории товаров -->
+    <div class="categories-container">
+        <button class="category-tab active" id="tab-all" onclick="filterCategory('all')">Все товары</button>
+        <button class="category-tab" id="tab-clothing" onclick="filterCategory('clothing')">Одежда</button>
+        <button class="category-tab" id="tab-shoes" onclick="filterCategory('shoes')">Обувь</button>
+        <button class="category-tab" id="tab-bags" onclick="filterCategory('bags')">Аксессуары</button>
+    </div>
+
+    <!-- Сетка каталога -->
     <div class="products-grid" id="products"></div>
 
     <script>
@@ -66,14 +91,16 @@
         tg.expand();
 
         let currentCurrency = 'UZS';
+        let currentCategory = 'all';
         let cart = {};
 
-        // ИСПРАВЛЕНО: Реальные прямые ссылки на картинки ваших товаров с ImgBB
+        // КАТАЛОГ С КАТЕГОРИЯМИ (Добавлены кроссовки KELME для теста обуви)
         const products = [
-            { id: 1, name: "RED STREET SWEATSHIRT", price_uzs: 650000, price_usd: 50, img: "https://i.ibb.co/F4PB6kf8/11425.webp" },
-            { id: 2, name: "MONTES YELLOW SWEATSHIRT", price_uzs: 180000, price_usd: 15, img: "https://i.ibb.co/9H9JggxK/3085.webp" },
-            { id: 3, name: "NAVY LYNX LONG PANTS", price_uzs: 290000, price_usd: 22, img: "https://i.ibb.co/1GdbdPtQ/4603.webp" },
-            { id: 4, name: "BACKPACK", price_uzs: 350000, price_usd: 28, img: "https://i.ibb.co/kVL2ndhJ/9569.webp" }
+            { id: 1, name: "RED STREET SWEATSHIRT", price_uzs: 650000, price_usd: 50, category: "clothing", img: "https://i.ibb.co/Ld6475vq/11425.webp" },
+            { id: 2, name: "MONTES YELLOW SWEATSHIRT", price_uzs: 180000, price_usd: 15, category: "clothing", img: "https://i.ibb.co/mC6FLFMw/3085.webp" },
+            { id: 3, name: "NAVY LYNX LONG PANTS", price_uzs: 290000, price_usd: 22, category: "clothing", img: "https://i.ibb.co/HTHZmCPQ/4603.webp" },
+            { id: 4, name: "BACKPACK PREMIUM", price_uzs: 350000, price_usd: 28, category: "bags", img: "https://i.ibb.co/wZqgKfCz/9569.webp" },
+            { id: 5, name: "KELME INDOOR FUTSAL WHITE", price_uzs: 590000, price_usd: 45, category: "shoes", img: "https://i.ibb.co/DPxKVrYS/Gemini-Generated-Image-cupw6fcupw6fcupw.webp" } // Замените позже на фото кроссовок
         ];
 
         function renderProducts() {
@@ -81,6 +108,9 @@
             container.innerHTML = '';
             
             products.forEach(p => {
+                // Фильтр по категориям
+                if (currentCategory !== 'all' && p.category !== currentCategory) return;
+
                 const count = cart[p.id] || 0;
                 const priceText = currentCurrency === 'UZS' ? `${p.price_uzs.toLocaleString()} UZS` : `$${p.price_usd}`;
                 
@@ -105,11 +135,19 @@
             updateMainButton();
         }
 
-        function setCurrency(currency) {
-            currentCurrency = currency;
-            document.getElementById('btn-uzs').classList.toggle('active', currency === 'UZS');
-            document.getElementById('btn-usd').classList.toggle('active', currency === 'USD');
-            cart = {};
+        function filterCategory(category) {
+            currentCategory = category;
+            const tabs = ['all', 'clothing', 'shoes', 'bags'];
+            tabs.forEach(t => {
+                document.getElementById(`tab-${t}`).classList.toggle('active', t === category);
+            });
+            renderProducts();
+        }
+
+        function toggleCurrency() {
+            currentCurrency = currentCurrency === 'UZS' ? 'USD' : 'UZS';
+            document.getElementById('currency-btn').innerText = `Валюта: ${currentCurrency}`;
+            cart = {}; // Очищаем корзину при смене валюты для избежания ошибок платежа
             renderProducts();
         }
 
@@ -130,13 +168,17 @@
             
             for (let id in cart) {
                 const prod = products.find(p => p.id == id);
-                total += cart[id] * (currentCurrency === 'UZS' ? prod.price_uzs : prod.price_usd);
-                itemsCount += cart[id];
+                if(prod) {
+                    total += cart[id] * (currentCurrency === 'UZS' ? prod.price_uzs : prod.price_usd);
+                    itemsCount += cart[id];
+                }
             }
 
             if (itemsCount > 0) {
                 const totalText = currentCurrency === 'UZS' ? `${total.toLocaleString()} UZS` : `$${total}`;
-                tg.MainButton.setText(`Оформить заказ: ${totalText}`);
+                tg.MainButton.setText(`КУПИТЬ: ${totalText}`);
+                tg.MainButton.textColor = '#ffffff';
+                tg.MainButton.color = '#000000'; // Черная кнопка Telegram под стиль бренда
                 tg.MainButton.show();
             } else {
                 tg.MainButton.hide();
