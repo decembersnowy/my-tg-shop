@@ -73,7 +73,27 @@
 
     <div class="products-grid" id="products"></div>
 
-    <script>
+   <script>
+        // ИСПРАВЛЕНО: Безопасное подключение SDK Telegram (не падает в обычном браузере)
+        if (!window.Telegram) {
+            window.Telegram = {};
+        }
+        if (!window.Telegram.WebApp) {
+            window.Telegram.WebApp = {
+                expand: function() { console.log("WebApp expanded (test mode)"); },
+                close: function() { console.log("WebApp closed (test mode)"); },
+                openInvoice: function(link, callback) { console.log("Opening invoice link:", link); },
+                MainButton: {
+                    setText: function(text) { console.log("MainButton text:", text); },
+                    show: function() { console.log("MainButton shown"); },
+                    hide: function() { console.log("MainButton hidden"); },
+                    showProgress: function() { console.log("MainButton progress shown"); },
+                    hideProgress: function() { console.log("MainButton progress hidden"); }
+                },
+                initDataUnsafe: { user: { id: 123456789 } } // Тестовый ID пользователя для браузера
+            };
+        }
+
         const tg = window.Telegram.WebApp;
         tg.expand();
 
