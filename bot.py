@@ -10,7 +10,7 @@ from aiogram.types import Message, LabeledPrice, PreCheckoutQuery, ContentType
 BOT_TOKEN = os.environ.get("BOT_TOKEN") or "9111379013:AAGIale1XfxLH-zi14CKI-fvNKHnkeA-HlI"
 
 # ИСПРАВЛЕНО: Обновили версию до v=4 для полного сброса кэша Telegram
-WEBAPP_URL = "https://decembersnowy.github.io/my-tg-shop/?v=4" 
+WEBAPP_URL = "https://decembersnowy.github.io/my-tg-shop/?v=5" 
 
 PROVIDER_TOKEN_UZS = os.environ.get("PROVIDER_TOKEN_UZS") or "398062629:TEST:999999999_F91D8F69C042267444B74CC0B3C747757EB0E065"
 
@@ -56,10 +56,10 @@ async def start_cmd(message: Message):
     )
 
 # ИСПРАВЛЕНО: Функция теперь идеально принимает новый облегченный формат корзины из index.html
-@dp.message(F.content_type == ContentType.WEB_APP_DATA)
+@dp.message(F.web_app_data)
 async def process_order(message: Message):
     try:
-        # Извлекаем чистую корзину (теперь это сразу словарь {id: количество})
+        # Напрямую вытаскиваем чистую корзину из WebApp
         cart = json.loads(message.web_app_data.data)
         
         prices = []
@@ -69,7 +69,7 @@ async def process_order(message: Message):
             product_id = int(p_id)
             prod = PRODUCTS.get(product_id)
             if prod:
-                # Считаем сумму строго в UZS
+                # Сумма в тийинах для UZS (умножаем на 100)
                 prices.append(LabeledPrice(label=f"{prod['name']} x{count}", amount=prod["uzs"] * count * 100))
                 description_parts.append(f"{prod['name']} ({count}шт)")
 
@@ -79,7 +79,7 @@ async def process_order(message: Message):
         
         await bot.send_invoice(
             chat_id=message.chat.id,
-            title="Оплата заказа",
+            title="Оплата заказа Kelme",
             description=", ".join(description_parts),
             payload="kelme_shop_payload",
             provider_token=PROVIDER_TOKEN_UZS,
