@@ -1,28 +1,26 @@
 import asyncio
 import json
-import os  # Проверьте, чтобы эта строчка была!
+import os
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import threading
 from aiogram import Bot, Dispatcher, F
 from aiogram.types import Message, LabeledPrice, PreCheckoutQuery, ContentType
 
 # === НАСТРОЙКИ ===
-# Сначала пробуем взять из настроек Render, а если там пусто — подставляем напрямую ваш токен
 BOT_TOKEN = os.environ.get("BOT_TOKEN") or "9111379013:AAGIale1XfxLH-zi14CKI-fvNKHnkeA-HlI"
 
-WEBAPP_URL = "https://decembersnowy.github.io/my-tg-shop/?v=3" 
+# ИСПРАВЛЕНО: Обновили версию до v=4 для полного сброса кэша Telegram
+WEBAPP_URL = "https://github.io" 
 
-# То же самое делаем для платежных токенов (если на Render не заданы, берутся строки)
 PROVIDER_TOKEN_UZS = os.environ.get("PROVIDER_TOKEN_UZS") or "398062629:TEST:999999999_F91D8F69C042267444B74CC0B3C747757EB0E065"
-PROVIDER_TOKEN_USD = os.environ.get("PROVIDER_TOKEN_USD") or "1877036958:TEST:5700904b8d9cc34596d3d724baa380cc33d3d18d"
 
-# База данных цен (ID товаров должны строго совпадать с index.html)
+# База данных цен (ID товаров строго совпадать с index.html)
 PRODUCTS = {
-    1: {"name": "RED STREET SWEATSHIRT", "uzs": 650000, "usd": 50},
-    2: {"name": "MONTES YELLOW SWEATSHIRT", "uzs": 180000, "usd": 15},
-    3: {"name": "NAVY LYNX LONG PANTS", "uzs": 290000, "usd": 22},
-    4: {"name": "BACKPACK PREMIUM", "uzs": 350000, "usd": 28},
-    5: {"name": "KELME INDOOR FUTSAL WHITE", "uzs": 590000, "usd": 45}
+    1: {"name": "RED STREET SWEATSHIRT", "uzs": 650000},
+    2: {"name": "MONTES YELLOW SWEATSHIRT", "uzs": 180000},
+    3: {"name": "NAVY LYNX LONG PANTS", "uzs": 290000},
+    4: {"name": "BACKPACK PREMIUM", "uzs": 350000},
+    5: {"name": "KELME INDOOR FUTSAL WHITE", "uzs": 590000}
 }
 
 bot = Bot(token=BOT_TOKEN)
@@ -41,7 +39,6 @@ def run_port_listener():
     server.serve_forever()
 
 # --- Логика Telegram-бота ---
-# --- Логика Telegram-бота ---
 @dp.message(F.text == "/start")
 async def start_cmd(message: Message):
     from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
@@ -58,37 +55,40 @@ async def start_cmd(message: Message):
         reply_markup=inline_kb
     )
 
+# ИСПРАВЛЕНО: Функция теперь идеально принимает новый облегченный формат корзины из index.html
 @dp.message(F.content_type == ContentType.WEB_APP_DATA)
 async def process_order(message: Message):
     try:
-        data = json.loads(message.web_app_data.data)
-        currency = data.get("currency")
-        items = data.get("items")
+        # Извлекаем чистую корзину (теперь это сразу словарь {id: количество})
+        cart = json.loads(message.web_app_data.data)
         
         prices = []
         description_parts = []
 
-        for p_id, count in items.items():
-            prod = PRODUCTS.get(int(p_id))
+        for p_id, count in cart.items():
+            product_id = int(p_id)
+            prod = PRODUCTS.get(product_id)
             if prod:
-                price_each = prod["uzs"] if currency == "UZS" else prod["usd"]
-                prices.append(LabeledPrice(label=f"{prod['name']} x{count}", amount=price_each * count * 100))
+                # Считаем сумму строго в UZS
+                prices.append(LabeledPrice(label=f"{prod['name']} x{count}", amount=prod["uzs"] * count * 100))
                 description_parts.append(f"{prod['name']} ({count}шт)")
 
-        provider_token = PROVIDER_TOKEN_UZS if currency == "UZS" else PROVIDER_TOKEN_USD
+        if not prices:
+            await message.answer("Ваша корзина пуста.")
+            return
         
         await bot.send_invoice(
             chat_id=message.chat.id,
             title="Оплата заказа",
             description=", ".join(description_parts),
-            payload="shop_order_payload",
-            provider_token=provider_token,
-            currency=currency,
+            payload="kelme_shop_payload",
+            provider_token=PROVIDER_TOKEN_UZS,
+            currency="UZS",
             prices=prices,
-            start_parameter="shop-order"
+            start_parameter="kelme-shop-order"
         )
     except Exception as e:
-        await message.answer("Произошла ошибка при формировании счета.")
+        await message.answer(f"Произошла ошибка при формировании счета: {e}")
 
 @dp.pre_checkout_query()
 async def pre_checkout_query_handler(pre_checkout_query: PreCheckoutQuery):
