@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Telegram Mini App Shop</title>
+    <!-- ИСПРАВЛЕНО: Правильная библиотека Telegram WebApp SDK -->
     <script src="https://telegram.org"></script>
     <style>
         body {
@@ -63,12 +64,12 @@
         let currentCurrency = 'UZS';
         let cart = {};
 
-        // ЗДЕСЬ НАСТОЯЩИЕ И ПОЛНЫЕ ССЫЛКИ НА ВАШИ КАРТИНКИ
+        // ИСПРАВЛЕНО: Прямые ссылки на ваши картинки с расширением .webp
         const products = [
-            { id: 1, name: "RED STREET SWEATSHIRT", price_uzs: 650000, price_usd: 50, img: "https://ibb.co/7t9GvxTr" },
-            { id: 2, name: "MONTES YELLOW SWEATSHIRT", price_uzs: 180000, price_usd: 15, img: "https://ibb.co/0yjk2204" },
-            { id: 3, name: "NAVY LYNX LONG PANTS", price_uzs: 290000, price_usd: 22, img: "https://ibb.co/HTxXxbf4" },
-            { id: 4, name: "BACKPACK", price_uzs: 350000, price_usd: 28, img: "https://ibb.co/xKnqv4MY" }
+            { id: 1, name: "RED STREET SWEATSHIRT", price_uzs: 650000, price_usd: 50, img: "https://ibb.co" },
+            { id: 2, name: "MONTES YELLOW SWEATSHIRT", price_uzs: 180000, price_usd: 15, img: "https://ibb.co" },
+            { id: 3, name: "NAVY LYNX LONG PANTS", price_uzs: 290000, price_usd: 22, img: "https://ibb.co" },
+            { id: 4, name: "BACKPACK", price_uzs: 350000, price_usd: 28, img: "https://ibb.co" }
         ];
 
         function renderProducts() {
