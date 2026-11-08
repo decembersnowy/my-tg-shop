@@ -9,12 +9,12 @@ from aiogram.types import Message, LabeledPrice, PreCheckoutQuery, ContentType
 # === НАСТРОЙКИ ===
 BOT_TOKEN = os.environ.get("BOT_TOKEN") or "9111379013:AAGIale1XfxLH-zi14CKI-fvNKHnkeA-HlI"
 
-# ИСПРАВЛЕНО: Обновили версию до v=4 для полного сброса кэша Telegram
-WEBAPP_URL = "https://decembersnowy.github.io/my-tg-shop/?v=100" 
+# ИСПРАВЛЕНО: Поставили v=101 для полного сброса старого кэша Telegram
+WEBAPP_URL = "https://decembersnowy.github.io/my-tg-shop/?v=101" 
 
 PROVIDER_TOKEN_UZS = os.environ.get("PROVIDER_TOKEN_UZS") or "398062629:TEST:999999999_F91D8F69C042267444B74CC0B3C747757EB0E065"
 
-# База данных цен (ID товаров строго совпадать с index.html)
+# База данных цен
 PRODUCTS = {
     1: {"name": "RED STREET SWEATSHIRT", "uzs": 650000},
     2: {"name": "MONTES YELLOW SWEATSHIRT", "uzs": 180000},
@@ -55,14 +55,19 @@ async def start_cmd(message: Message):
         reply_markup=inline_kb
     )
 
-# ИСПРАВЛЕНО: Функция теперь идеально принимает новый облегченный формат корзины из index.html
-@dp.message(F.text.startswith("/order_data"))
+# ИСПРАВЛЕНО: Бот теперь слушает системное событие отправки данных из Mini App
+@dp.message(F.web_app_data)
 async def process_order(message: Message):
     try:
-        # Извлекаем JSON-строку из текста команды
-        raw_json = message.text.replace("/order_data ", "")
-        cart = json.loads(raw_json)
+        # Вытаскиваем чистую корзину из системного поля WebApp
+        cart = json.loads(message.web_app_data.data)
         
+        # Защита на случай, если данные прилетели строкой с префиксом
+        if isinstance(cart, str) and cart.startswith("/order_data"):
+            cart = json.loads(cart.replace("/order_data ", ""))
+        elif message.web_app_data.data.startswith("/order_data"):
+            cart = json.loads(message.web_app_data.data.replace("/order_data ", ""))
+
         prices = []
         description_parts = []
 
