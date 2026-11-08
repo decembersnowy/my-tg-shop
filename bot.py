@@ -21,7 +21,8 @@ PRODUCTS = {
     1: {"name": "RED STREET SWEATSHIRT", "uzs": 650000, "usd": 50},
     2: {"name": "MONTES YELLOW SWEATSHIRT", "uzs": 180000, "usd": 15},
     3: {"name": "NAVY LYNX LONG PANTS", "uzs": 290000, "usd": 22},
-    4: {"name": "BACKPACK", "uzs": 350000, "usd": 28}
+    4: {"name": "BACKPACK PREMIUM", "uzs": 350000, "usd": 28},
+    5: {"name": "KELME INDOOR FUTSAL WHITE", "uzs": 590000, "usd": 45}
 }
 
 bot = Bot(token=BOT_TOKEN)
