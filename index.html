@@ -4,11 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Telegram Mini App Shop</title>
-    <!-- Подключаем официальный скрипт Telegram Web App -->
     <script src="https://telegram.org"></script>
     <style>
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background-color: var(--tg-theme-bg-color, #ffffff);
             color: var(--tg-theme-text-color, #000000);
             margin: 0; padding: 10px; box-sizing: border-box;
@@ -50,27 +49,26 @@
 </head>
 <body>
 
-    <!-- Переключатель валюты -->
     <div class="currency-switcher">
         <button class="btn-currency active" id="btn-uzs" onclick="setCurrency('UZS')">UZS (сум)</button>
         <button class="btn-currency" id="btn-usd" onclick="setCurrency('USD')">USD ($)</button>
     </div>
 
-    <!-- Сетка товаров -->
     <div class="products-grid" id="products"></div>
 
     <script>
         const tg = window.Telegram.WebApp;
-        tg.expand(); // Разворачиваем приложение на весь экран
+        tg.expand();
 
         let currentCurrency = 'UZS';
         let cart = {};
 
+        // ЗДЕСЬ НАСТОЯЩИЕ И ПОЛНЫЕ ССЫЛКИ НА ВАШИ КАРТИНКИ
         const products = [
-            { id: 1, name: "RED STREET SWEATSHIRT", price_uzs: 650000, price_usd: 50, img: "https://ibb.co" },
-            { id: 2, name: "MONTES YELLOW SWEATSHIRT", price_uzs: 180000, price_usd: 15, img: "https://ibb.co" },
-            { id: 3, name: "NAVY LYNX LONG PANTS", price_uzs: 290000, price_usd: 22, img: "https://ibb.co" },
-            { id: 4, name: "BACKPACK", price_uzs: 350000, price_usd: 28, img: "https://ibb.co" }
+            { id: 1, name: "RED STREET SWEATSHIRT", price_uzs: 650000, price_usd: 50, img: "https://ibb.co/7t9GvxTr" },
+            { id: 2, name: "MONTES YELLOW SWEATSHIRT", price_uzs: 180000, price_usd: 15, img: "https://ibb.co/0yjk2204" },
+            { id: 3, name: "NAVY LYNX LONG PANTS", price_uzs: 290000, price_usd: 22, img: "https://ibb.co/HTxXxbf4" },
+            { id: 4, name: "BACKPACK", price_uzs: 350000, price_usd: 28, img: "https://ibb.co/xKnqv4MY" }
         ];
 
         function renderProducts() {
@@ -106,7 +104,7 @@
             currentCurrency = currency;
             document.getElementById('btn-uzs').classList.toggle('active', currency === 'UZS');
             document.getElementById('btn-usd').classList.toggle('active', currency === 'USD');
-            cart = {}; // При смене валюты очищаем корзину, чтобы не путать расчеты
+            cart = {};
             renderProducts();
         }
 
@@ -121,7 +119,6 @@
             renderProducts();
         }
 
-        // Кнопка самого Telegram внизу экрана
         function updateMainButton() {
             let total = 0;
             let itemsCount = 0;
@@ -141,16 +138,14 @@
             }
         }
 
-        // Передача данных из корзины в бот при нажатии кнопки «Оформить»
         tg.onEvent('mainButtonClicked', function() {
             const orderData = {
                 currency: currentCurrency,
                 items: cart
             };
-            tg.sendData(JSON.stringify(orderData)); // Отправляем данные бэкенду
+            tg.sendData(JSON.stringify(orderData));
         });
 
-        // Первичный запуск
         renderProducts();
     </script>
 </body>
