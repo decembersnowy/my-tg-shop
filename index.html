@@ -33,7 +33,11 @@
             border-radius: 12px; padding: 10px; display: flex; flex-direction: column; justify-content: space-between;
         }
         .product-img {
-            width: 100%; height: 120px; object-fit: cover; border-radius: 8px;
+        width: 100%;
+        height: 180px; /* Увеличили высоту, чтобы вещь помещалась */
+        object-fit: contain; /* ИСПРАВЛЕНО: теперь картинка не обрезается, а сжимается целиком внутрь */
+        background: #ffffff; /* Белый фон под картинку, если она узкая */
+        border-radius: 8px;
         }
         .product-title { font-size: 14px; margin: 8px 0 4px 0; font-weight: 600; }
         .product-price { font-size: 13px; color: var(--tg-theme-hint-color, #aaa); margin-bottom: 10px; }
