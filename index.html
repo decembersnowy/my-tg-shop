@@ -93,12 +93,12 @@
         let currentCategory = 'all';
         let cart = {};
 
-        // Список товаров с прямыми ссылками
+        // Список товаров с вашими прямыми webp ссылками
         const products = [
             { id: 1, name: "RED STREET SWEATSHIRT", price_uzs: 650000, category: "clothing", img: "https://i.ibb.co/wZqgKfCz/9569.webp" },
             { id: 2, name: "MONTES YELLOW SWEATSHIRT", price_uzs: 180000, category: "clothing", img: "https://i.ibb.co/HTHZmCPQ/4603.webp" },
-            { id: 3, name: "NAVY LYNX LONG PANTS", price_uzs: 290000, category: "clothing", img: "https://i.ibb.co/Ld6475vq/11425.webp" },
-            { id: 4, name: "BACKPACK PREMIUM", price_uzs: 350000, category: "bags", img: "https://i.ibb.co/DPxKVrYS/Gemini-Generated-Image-cupw6fcupw6fcupw.webp" }
+            { id: 3, name: "NAVY LYNX LONG PANTS", price_uzs: 290000, category: "clothing", img: "https://i.ibb.co/mC6FLFMw/3085.webp" },
+            { id: 4, name: "BACKPACK PREMIUM", price_uzs: 350000, category: "bags", img: "https://i.ibb.co/Ld6475vq/11425.webp" }
         ];
 
         function renderProducts() {
@@ -174,12 +174,9 @@
             }
         }
 
+        // КРИТИЧЕСКИЙ КУСОК: Передаем серверу чистую корзину без лишних оберток
         tg.onEvent('mainButtonClicked', function() {
-            const orderData = {
-                currency: 'UZS',
-                items: cart
-            };
-            tg.sendData(JSON.stringify(orderData));
+            tg.sendData(JSON.stringify(cart));
         });
 
         renderProducts();
